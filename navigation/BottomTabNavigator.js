@@ -3,8 +3,9 @@ import * as React from 'react';
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
+import LinksScreen from '../screens/YourScheduleScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import RankScreen from '../screens/RankScreen'
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
@@ -34,6 +35,22 @@ export default function BottomTabNavigator({ navigation, route }) {
         }}
       />
       <BottomTab.Screen
+        name="Ranking"
+        component={RankScreen}
+        options={{
+          title: 'Rankings',
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-trophy" />,
+        }}
+      />
+      <BottomTab.Screen
+        name="Notes"
+        component={SettingsScreen}
+        options={{
+          title: 'Notes',
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-list-box" />,
+        }}
+      />
+      <BottomTab.Screen
         name="Settings"
         component={SettingsScreen}
         options={{
@@ -41,6 +58,7 @@ export default function BottomTabNavigator({ navigation, route }) {
           tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-settings" />,
         }}
       />
+      
       
     </BottomTab.Navigator>
   );
@@ -55,6 +73,10 @@ function getHeaderTitle(route) {
     case 'YourSchedule':
       return 'Customized Team Schedule';
     case 'Settings':
-      return 'Configure Event';
+      return 'Configure Concurrent';
+    case 'Ranking':
+      return 'Rankings';
+    case 'Notes':
+      return 'Notes';
   }
 }

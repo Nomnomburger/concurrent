@@ -1,6 +1,6 @@
 import * as WebBrowser from 'expo-web-browser';
 import React, { useEffect, useState, useLayoutEffect } from 'react';
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View, FlatList, ActivityIndicator, RefreshControl, YellowBox } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage'
@@ -8,6 +8,7 @@ import Constants from 'expo-constants';
 
 
 import { MonoText } from '../components/StyledText';
+YellowBox.ignoreWarnings(['VirtualizedLists should never be nested']);
 
 
 function wait(timeout) {
