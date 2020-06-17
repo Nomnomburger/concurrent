@@ -1,53 +1,141 @@
 import * as WebBrowser from 'expo-web-browser';
-import * as React from 'react';
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import Axios from 'axios';
+import AsyncStorage from '@react-native-community/async-storage'
+import Constants from 'expo-constants';
+
 
 import { MonoText } from '../components/StyledText';
 
+
+function wait(timeout) {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeout);
+  });
+}
+
+
 export default function HomeScreen() {
+
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    readSku();
+
+    wait(2000).then(() => setRefreshing(false));
+  }, [refreshing]);
+
+
+
+  const [isLoading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
+
+  const [sku, setSku] = useState('')
+
+  const STORAGE_KEY_SKU = '@save_sku'
+
+  const readSku = async () => {
+    try {
+      const selectedSku = await AsyncStorage.getItem(STORAGE_KEY_SKU)
+
+      if (selectedSku !== null) {
+        setSku(selectedSku)
+      }
+    } catch (e) {
+      alert('Set the Event Code in the Configure tab first!')
+    }
+  }
+
+
+
+
+  useEffect(() => {
+    readSku()
+    //readDivision()
+  }, []);
+
+  useEffect(() => {
+    if (sku) {
+      Axios.get(`https://api.vexdb.io/v1/get_matches?sku=${sku}`)
+        .then(({ data }) => {
+          //console.log("defaultApp -> data", data)
+          setData(data.result)
+        })
+        .catch((error) => console.error(error))
+        .finally(() => setLoading(false));
+    }
+
+  }, [sku]);
+
+  
+
+
+
+  const shadowOpt = {
+    width: 160,
+    height: 170,
+    color: "#000",
+    border: 2,
+    radius: 3,
+    opacity: 0.2,
+    x: 0,
+    y: 3,
+    style: { marginVertical: 5 }
+  };
+
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-        <View style={styles.welcomeContainer}>
-          <Image
-            source={
-              __DEV__
-                ? require('../assets/images/robot-dev.png')
-                : require('../assets/images/robot-prod.png')
+      <ScrollView 
+        style={styles.container} 
+        contentContainerStyle={styles.contentContainer} 
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        {isLoading ? <ActivityIndicator /> : (
+          <FlatList
+            data={data}
+            keyExtractor={(item, index) => {
+              return index.toString();
+            }}
+            renderItem={({ item }) => {
+              //console.log("item", item)
+              return (
+                <View style={styles.matchCard}>
+                  <View style={{ flex: 1, justifyContent: "space-between" }}>
+                    <View style={{ flex: 3, flexDirection: "row", justifyContent: "space-around" }}>
+                      <View>
+                        <View style={styles.redChip} />
+                        <Text style={styles.redTeamText}>{item.red1}</Text>
+                        <Text style={styles.redTeamText}>{item.red2}</Text>
+                      </View>
+                      <View>
+                        <View style={styles.blueChip} />
+                        <Text style={styles.blueTeamText}>{item.blue1}</Text>
+                        <Text style={styles.blueTeamText}>{item.blue2}</Text>
+                      </View>
+                    </View>
+                    <View style={{ flex: 1.5, flexDirection: "row" }} >
+                      <View style={{ width: 200 }}>
+                        <Text style={styles.matchInfoText}>Field: {item.field}</Text>
+                        <Text style={styles.matchInfoText}>Time: {item.scheduled.slice(11, 16)}</Text>
+                      </View>
+                      <View style={{ flex: 1, flexDirection: "row", justifyContent: "flex-end" }}>
+                        <Text style={styles.matchNumText}>{item.matchnum}</Text>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              )
             }
-            style={styles.welcomeImage}
+            }
           />
-        </View>
-
-        <View style={styles.getStartedContainer}>
-          <DevelopmentModeNotice />
-
-          <Text style={styles.getStartedText}>Open up the code for this screen:</Text>
-
-          <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-            <MonoText>screens/HomeScreen.js</MonoText>
-          </View>
-
-          <Text style={styles.getStartedText}>
-            Change any of the text, save the file, and your app will automatically reload.
-          </Text>
-        </View>
-
-        <View style={styles.helpContainer}>
-          <TouchableOpacity onPress={handleHelpPress} style={styles.helpLink}>
-            <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
-          </TouchableOpacity>
-        </View>
+        )}
       </ScrollView>
-
-      <View style={styles.tabBarInfoContainer}>
-        <Text style={styles.tabBarInfoText}>This is a tab bar. You can edit it in:</Text>
-
-        <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-          <MonoText style={styles.codeHighlightText}>navigation/BottomTabNavigator.js</MonoText>
-        </View>
-      </View>
     </View>
   );
 }
@@ -56,28 +144,7 @@ HomeScreen.navigationOptions = {
   header: null,
 };
 
-function DevelopmentModeNotice() {
-  if (__DEV__) {
-    const learnMoreButton = (
-      <Text onPress={handleLearnMorePress} style={styles.helpLinkText}>
-        Learn more
-      </Text>
-    );
 
-    return (
-      <Text style={styles.developmentModeText}>
-        Development mode is enabled: your app will be slower but you can use useful development
-        tools. {learnMoreButton}
-      </Text>
-    );
-  } else {
-    return (
-      <Text style={styles.developmentModeText}>
-        You are not in development mode: your app will run at full speed.
-      </Text>
-    );
-  }
-}
 
 function handleLearnMorePress() {
   WebBrowser.openBrowserAsync('https://docs.expo.io/versions/latest/workflow/development-mode/');
@@ -150,7 +217,7 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
       },
       android: {
-        elevation: 20,
+        elevation: 70,
       },
     }),
     alignItems: 'center',
@@ -175,5 +242,57 @@ const styles = StyleSheet.create({
   helpLinkText: {
     fontSize: 14,
     color: '#2e78b7',
+  },
+  matchCard: {
+    flex: 1,
+    flexDirection: "row",
+    height: 270,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    marginHorizontal: 20,
+    marginVertical: 10,
+    padding: 10,
+    elevation: 3
+  },
+  redChip: {
+    width: 100,
+    height: 20,
+    borderRadius: 100,
+    backgroundColor: '#FF0000',
+    //marginRight: 40,
+    marginTop: 20
+  },
+  blueChip: {
+    width: 100,
+    height: 20,
+    borderRadius: 100,
+    backgroundColor: '#1500FF',
+    //marginLeft: 40,
+    marginTop: 20
+  },
+  redTeamText: {
+    fontSize: 28,
+    textAlignVertical: "center",
+    textAlign: "center",
+    marginVertical: 10,
+    //marginRight: 40,
+  },
+  blueTeamText: {
+    fontSize: 28,
+    textAlignVertical: "center",
+    textAlign: "center",
+    marginVertical: 10,
+    //marginLeft: 40,
+  },
+  matchInfoText: {
+    fontSize: 20,
+    marginTop: 8,
+    marginLeft: 10,
+  },
+  matchNumText: {
+    fontSize: 60,
+    marginVertical: 0,
+    textAlign: "center",
+    textAlignVertical: "center"
   },
 });
