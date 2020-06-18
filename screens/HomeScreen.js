@@ -1,6 +1,6 @@
 import * as WebBrowser from 'expo-web-browser';
 import React, { useEffect, useState, useLayoutEffect } from 'react';
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View, FlatList, ActivityIndicator, RefreshControl, YellowBox } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage'
@@ -8,6 +8,7 @@ import Constants from 'expo-constants';
 
 
 import { MonoText } from '../components/StyledText';
+YellowBox.ignoreWarnings(['VirtualizedLists should never be nested']);
 
 
 function wait(timeout) {
@@ -112,11 +113,13 @@ export default function HomeScreen() {
                         <View style={styles.redChip} />
                         <Text style={styles.redTeamText}>{item.red1}</Text>
                         <Text style={styles.redTeamText}>{item.red2}</Text>
+                        <Text style={styles.redTeamScoreText}>{item.redscore}</Text>
                       </View>
                       <View>
                         <View style={styles.blueChip} />
                         <Text style={styles.blueTeamText}>{item.blue1}</Text>
                         <Text style={styles.blueTeamText}>{item.blue2}</Text>
+                        <Text style={styles.blueTeamScoreText}>{item.bluescore}</Text>
                       </View>
                     </View>
                     <View style={{ flex: 1.5, flexDirection: "row" }} >
@@ -246,13 +249,13 @@ const styles = StyleSheet.create({
   matchCard: {
     flex: 1,
     flexDirection: "row",
-    height: 270,
+    height: 330,
     backgroundColor: '#fff',
     borderRadius: 10,
     marginHorizontal: 20,
     marginVertical: 10,
     padding: 10,
-    elevation: 3
+    elevation: 3,
   },
   redChip: {
     width: 100,
@@ -276,6 +279,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginVertical: 10,
     //marginRight: 40,
+    fontFamily: 'Octarine-Bold'
+  },
+  redTeamScoreText: {
+    fontSize: 28,
+    textAlignVertical: "center",
+    textAlign: "center",
+    marginVertical: 10,
+    //marginRight: 40,
+    fontFamily: 'Octarine-Light'
   },
   blueTeamText: {
     fontSize: 28,
@@ -283,16 +295,27 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginVertical: 10,
     //marginLeft: 40,
+    fontFamily: 'Octarine-Bold'
+  },
+  blueTeamScoreText: {
+    fontSize: 28,
+    textAlignVertical: "center",
+    textAlign: "center",
+    marginVertical: 10,
+    //marginLeft: 40,
+    fontFamily: 'Octarine-Light'
   },
   matchInfoText: {
     fontSize: 20,
     marginTop: 8,
     marginLeft: 10,
+    fontFamily: 'Octarine-Light'
   },
   matchNumText: {
     fontSize: 60,
     marginVertical: 0,
     textAlign: "center",
-    textAlignVertical: "center"
+    textAlignVertical: "center",
+    fontFamily: 'Octarine-Bold'
   },
 });
