@@ -22,7 +22,10 @@ export default function BottomTabNavigator({ navigation, route }) {
         name="Home"
         component={HomeScreen}
         options={{
-          title: 'Event Schedule',
+          title: 'Schedule',
+          headerStyle: {
+            fontFamily: 'Octarine-Bold'
+          },
           tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-calendar" />,
         }}
       />
@@ -60,6 +63,7 @@ export default function BottomTabNavigator({ navigation, route }) {
       />
       
       
+      
     </BottomTab.Navigator>
   );
 }
@@ -69,7 +73,7 @@ function getHeaderTitle(route) {
 
   switch (routeName) {
     case 'Home':
-      return 'Event Schedule';
+      return 'Schedule';
     case 'YourSchedule':
       return 'Customized Team Schedule';
     case 'Settings':
