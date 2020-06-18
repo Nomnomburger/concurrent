@@ -1,6 +1,8 @@
 # concurrent
 Concurrent VEX Scheduler OSS
 
+[![Build Status](https://travis-ci.com/byCedric/expo-guide-ci.svg?branch=master)](https://travis-ci.com/byCedric/expo-guide-ci)
+
 Concurrent is a VEX Scheduler using data from VEX DB (https://vexdb.io)
 Concurrent is an open source project, which means you can help developer new features!
 
