@@ -31,4 +31,3 @@ Navigate to Concurrent (either forked or checked out on you branch using git)
 Run `npm install` to install dependencies.
 
 ## Thank you for your interest in Concurrent!
-### Please wait for me to finish up some stuff, and this project will be all yours to improve.
