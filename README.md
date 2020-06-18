@@ -1,6 +1,9 @@
 # concurrent
 Concurrent VEX Scheduler OSS
 
+
+[![Build Status](https://travis-ci.com/WontonSoup777/concurrent.svg?branch=develop)](https://travis-ci.com/WontonSoup777/concurrent)
+
 Concurrent is a VEX Scheduler using data from VEX DB (https://vexdb.io)
 Concurrent is an open source project, which means you can help developer new features!
 
@@ -32,5 +35,6 @@ Run `npm install` to install dependencies.
 
 **In Github:**
 Create a new *issue* on what you are going to do. This makes tracking work more organized.
+
 
 ## Thank you for your interest in Concurrent!

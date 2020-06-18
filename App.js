@@ -1,5 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { useFonts } from '@use-expo/font';
 import * as React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 
@@ -12,7 +13,12 @@ const Stack = createStackNavigator();
 export default function App(props) {
   const isLoadingComplete = useCachedResources();
 
-  if (!isLoadingComplete) {
+  let [fontsLoaded] = useFonts({
+    'Octarine-Bold': require('./assets/fonts/Octarine-Bold.otf'),
+    'Octarine-Light': require('./assets/fonts/Octarine-Light.otf'),
+  });
+
+  if (!isLoadingComplete && !fontsLoaded) {
     return null;
   } else {
     return (

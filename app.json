@@ -7,12 +7,11 @@
       "android",
       "web"
     ],
-    "version": "1.0.0",
+    "version": "0.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "splash": {
-      "image": "./assets/images/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -23,7 +22,13 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.wontonsoup.concurrent",
+      "buildNumber": "0.0.2"
+    },
+    "android": {
+      "package": "com.wontonsoup.concurrent",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
